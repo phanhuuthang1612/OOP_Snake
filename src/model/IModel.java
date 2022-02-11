@@ -20,4 +20,6 @@ public interface IModel {
 	void moveUp();
 
 	void moveDown();
+
+	int getHighScore();
 }

@@ -7,13 +7,16 @@ import javax.swing.JPanel;
 
 import control.IController;
 import defaul.GameConfig;
+import model.IModel;
 
 public class GamePanel extends JPanel {
 	IController controller;
+	IModel model;
 
 	public GamePanel(IController controller) {
 		super();
 		this.controller = controller;
+		this.model = controller.getModel();
 		init();
 	}
 
@@ -24,6 +27,6 @@ public class GamePanel extends JPanel {
 
 	@Override
 	public void paint(Graphics g) {
-		
+		model.draw(g);
 	}
 }

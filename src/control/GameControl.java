@@ -1,71 +1,79 @@
 package control;
 
-public class GameControl implements IController{
+import model.Broad;
+import model.IModel;
+import view.GameScreen;
+import view.IView;
+import view.MenuScreen;
+
+public class GameControl implements IController {
+
+	private IModel model;
+
+	private IView menuScreen;
+	private IView gameScreen;
+
+	public GameControl(IModel model) {
+		this.model = model;
+		menuScreen = new MenuScreen(this);
+		gameScreen = new GameScreen(this);
+
+	}
 
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-		
+		gameScreen.newGame();
 	}
 
 	@Override
 	public void moveUp() {
-		// TODO Auto-generated method stub
-		
+		model.moveUp();
+
 	}
 
 	@Override
 	public void moveLeft() {
-		// TODO Auto-generated method stub
-		
+		model.moveLeft();
+
 	}
 
 	@Override
 	public void moveRight() {
-		// TODO Auto-generated method stub
-		
+		model.moveRight();
+
 	}
 
 	@Override
 	public void moveDown() {
-		// TODO Auto-generated method stub
-		
-	}
+		model.moveDown();
 
-	@Override
-	public void ronate() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+		model.pause();
 	}
 
 	@Override
 	public void lose() {
-		// TODO Auto-generated method stub
-		
+		menuScreen.newGame();
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
+		model.pause();
+		menuScreen.newGame();
 	}
 
 	@Override
 	public void setLevel(int level) {
-		// TODO Auto-generated method stub
-		
+		model.setLevel(level);
+
 	}
 
 	@Override
-	public int getLevel() {
-		// TODO Auto-generated method stub
-		return 0;
+	public IModel getModel() {
+		return this.model;
 	}
 
 }

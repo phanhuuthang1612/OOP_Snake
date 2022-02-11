@@ -1,14 +1,12 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,40 +18,54 @@ import javax.swing.JPanel;
 
 import control.IController;
 import defaul.GameConfig;
+import model.IModel;
 
-public class MenuScreen extends JFrame {
-	IController control;
-	JPanel btnPn;
-	JButton newGameBtn, resumeBtn, highScoreBtn, quitBtn;
+public class MenuScreen extends JFrame implements IView {
+	private IController control;
+	private JPanel btnPn;
+	private JButton newGameBtn, resumeBtn, quitBtn;
+	private JLabel highScoreLb;
+	private ImageIcon image;
+	private IModel model;
 
 	public MenuScreen(IController control) {
 		super(GameConfig.name);
 		this.control = control;
-		init();
-	}
-
-	private void init() {
+		this.model = control.getModel();
+		image = new ImageIcon("image//background.png");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
 		setResizable(false);
-		setContentPane(new JLabel(new ImageIcon("image\\background.png")));
-		getContentPane().setLayout(new FlowLayout());
-		addButtons();
-		pack();
+		setContentPane(new JLabel(image));
+		setSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
+		init();
 		setLocationRelativeTo(null);
 		setVisible(true);
 
 	}
 
+	private void init() {
+		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+		addLabel();
+		addButtons();
+		setPreferredSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
+	}
+
+	private void addLabel() {
+		Font font = new Font("Bushcraft", Font.BOLD, 24);
+		add(Box.createVerticalStrut(200));
+		highScoreLb = new JLabel("HighScore :" + model.getHighScore());
+		highScoreLb.setFont(font);
+		highScoreLb.setForeground(Color.yellow);
+		add(highScoreLb);
+		highScoreLb.setAlignmentX(Container.CENTER_ALIGNMENT);
+		add(Box.createVerticalStrut(30));
+	}
+
 	private void addButtons() {
 		Font font = new Font("Bushcraft", Font.BOLD, 30);
-		btnPn = new JPanel();
-		btnPn.setSize(new Dimension(200, 200));
-		btnPn.setLayout(new BoxLayout(btnPn, BoxLayout.Y_AXIS));
 
 		newGameBtn = new JButton("New Game");
 		resumeBtn = new JButton("Resume");
-		highScoreBtn = new JButton("HighScore");
 		quitBtn = new JButton("Quit");
 
 		newGameBtn.setFont(font);
@@ -78,7 +90,7 @@ public class MenuScreen extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				newGame();
 			}
 		});
 
@@ -99,32 +111,6 @@ public class MenuScreen extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				resumeBtn.setForeground(Color.yellow);
-
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
-
-		highScoreBtn.setFont(font);
-		highScoreBtn.setForeground(Color.white);
-		highScoreBtn.setBorder(null);
-		highScoreBtn.setFocusPainted(false);
-		highScoreBtn.setContentAreaFilled(false);
-		highScoreBtn.setAlignmentX(Container.CENTER_ALIGNMENT);
-		highScoreBtn.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				highScoreBtn.setForeground(Color.white);
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				highScoreBtn.setForeground(Color.yellow);
 
 			}
 
@@ -155,19 +141,39 @@ public class MenuScreen extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				System.exit(0);
 			}
 		});
 
-		btnPn.add(Box.createVerticalStrut(240));
-		btnPn.add(newGameBtn);
-		btnPn.add(Box.createVerticalStrut(30));
-		btnPn.add(resumeBtn);
-		btnPn.add(Box.createVerticalStrut(30));
-		btnPn.add(highScoreBtn);
-		btnPn.add(Box.createVerticalStrut(30));
-		btnPn.add(quitBtn);
-		btnPn.setOpaque(false);
-		getContentPane().add(btnPn);
+		add(newGameBtn);
+		add(Box.createVerticalStrut(30));
+		add(resumeBtn);
+		add(Box.createVerticalStrut(30));
+		add(quitBtn);
+
+	}
+
+	@Override
+	public void newGame() {
+		setVisible(false);
+		control.start();
+
+	}
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void lose() {
+		setVisible(true);
+
+	}
+
+	@Override
+	public void resume() {
+		setVisible(false);
+
 	}
 }

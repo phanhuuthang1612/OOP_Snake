@@ -2,6 +2,8 @@ package control;
 
 import java.awt.Graphics;
 
+import model.IModel;
+
 public interface IController {
 
 	public void start();
@@ -14,8 +16,6 @@ public interface IController {
 
 	public void moveDown();
 
-	public void ronate();
-
 	public void pause();
 
 	public void lose();
@@ -23,6 +23,6 @@ public interface IController {
 	public void resume();
 	
 	public void setLevel(int level);
-	
-	public int getLevel();
+
+	public IModel getModel();
 }
