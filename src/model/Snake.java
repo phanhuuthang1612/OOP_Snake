@@ -1,20 +1,87 @@
 package model;
 
+import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.List;
 
-import defaul.GameConfig;
+import config.GameConfig;
 
-public class Snake {
+public class Snake implements GameObject {
+	public static final int UP = 0;
+	public static final int DOWN = 1;
+	public static final int RIGHT = 2;
+	public static final int LEFT = 3;
 
-	Point head;
-	List<Point> body;
+	private Point head;
+	private List<Point> body;
+
+	private boolean wasEat;
 
 	public Snake() {
-		head = new Point(4, GameConfig.row / 2);
+		newSnake();
+	}
+
+	public void newSnake() {
+		wasEat = false;
+		head = new Point(GameConfig.col / 3, GameConfig.row / 2);
+		body = new ArrayList<Point>();
+		body.add(new Point(GameConfig.col / 3 - 3, GameConfig.row / 2));
+		body.add(new Point(GameConfig.col / 3 - 2, GameConfig.row / 2));
+		body.add(new Point(GameConfig.col / 3 - 1, GameConfig.row / 2));
 	}
 
 	public boolean isEatApple(Apple apple) {
-		return head.equals(apple.getLocation());
+		if (head.equals(apple.getLocation())) {
+			wasEat = true;
+			body.add(new Point(apple.getLocation()));
+			return true;
+		} else
+			return false;
+	}
+
+	@Override
+	public void draw(Graphics g) {
+		g.setColor(GameConfig.headColor);
+		g.fillRect(head.x * GameConfig.size, head.y * GameConfig.size, GameConfig.size, GameConfig.size);
+		g.setColor(GameConfig.bodyColor);
+		for (Point point : body) {
+			g.fillRect(point.x * GameConfig.size, point.y * GameConfig.size, GameConfig.size, GameConfig.size);
+		}
+
+	}
+
+	public boolean isInSnake(Point p) {
+		if (head.equals(p))
+			return true;
+		for (Point point : body)
+			if (point.equals(p))
+				return true;
+		return false;
+	}
+
+	public void move(int achor) {
+		Point temp = new Point(head);
+		body.add(temp);
+		switch (achor) {
+		case UP: {
+			head.translate(0, -1);
+			break;
+		}
+		case LEFT: {
+			head.translate(-1, 0);
+			break;
+		}
+		case RIGHT: {
+			head.translate(1, 0);
+			break;
+		}
+		case DOWN:
+			head.translate(0, 1);
+		}
+		if (wasEat)
+			wasEat = !wasEat;
+		else
+			body.remove(0);
 	}
 }

@@ -3,13 +3,15 @@ package model;
 import java.awt.Graphics;
 
 public interface IModel {
+	void newGame();
+
 	void start();
 
 	void pause();
 
 	void setLevel(int level);
 
-	void getLevel();
+	int getLevel();
 
 	void draw(Graphics g);
 

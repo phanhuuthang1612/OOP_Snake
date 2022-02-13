@@ -5,43 +5,51 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import config.GameConfig;
 import control.IController;
-import defaul.GameConfig;
 import model.IModel;
 
-public class GameScreen extends JFrame implements IView {
+public class GameScreen extends JFrame implements IView, Observer {
 	private IController controller;
 	private JPanel optPn;
-	private JPanel gamePn;
+	private GamePanel gamePn;
 	private JButton soundBtn;
 	private JButton exitBtn;
 	private JLabel pointLb, highScoreLb;
 	private IModel model;
+	
 
 	public GameScreen(IController controler) {
 		super(GameConfig.name);
 		this.controller = controler;
-		this.model = model;
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setResizable(false);
-		setSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight + 70));
+		this.model = controler.getModel();
+		((Observable) this.model).addObserver(this);
 		init();
+		pack();
+		setFocusable(true);
+		addKeyListener(keyListener());
 		setLocationRelativeTo(null);
 		setVisible(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 
 	}
 
 	private void init() {
 		Font font = new Font("Bushcraft", Font.BOLD, 16);
-		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+		setLayout(new BorderLayout());
 		optPn = new JPanel();
 		optPn.setBackground(GameConfig.backRoundNorth);
 		optPn.setPreferredSize(new Dimension(GameConfig.frameWidth, 70));
@@ -70,21 +78,29 @@ public class GameScreen extends JFrame implements IView {
 		ImageIcon iconBt = new ImageIcon("image/close.png");
 		Image imageFitBt = iconBt.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 		iconBt = new ImageIcon(imageFitBt);
-		soundBtn = new JButton(iconBt);
-		soundBtn.setBorder(null);
-		soundBtn.setFocusPainted(false);
-		soundBtn.setContentAreaFilled(false);
-		btnPn.add(soundBtn);
+		exitBtn = new JButton(iconBt);
+		exitBtn.setBorder(null);
+		exitBtn.setFocusPainted(false);
+		exitBtn.setContentAreaFilled(false);
+		btnPn.add(exitBtn);
 		optPn.add(btnPn, BorderLayout.EAST);
-		
+
 		gamePn = new GamePanel(controller);
-		getContentPane().add(optPn);
-		getContentPane().add(gamePn);
+		gamePn.setPreferredSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
+
+		add(optPn, BorderLayout.NORTH);
+		add(gamePn, BorderLayout.EAST);
 	}
 
 	@Override
 	public void newGame() {
-		setVisible(true);
+		controller.newGame();
+	}
+
+	@Override
+	public void start() {
+		controller.start();
+
 	}
 
 	@Override
@@ -102,6 +118,22 @@ public class GameScreen extends JFrame implements IView {
 	public void resume() {
 		controller.resume();
 
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		gamePn.repaint();
+		System.out.println("repaint");
+
+	}
+
+	private KeyListener keyListener() {
+		return new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				controller.start();
+			}
+		};
 	}
 
 }

@@ -11,7 +11,6 @@ import view.GameScreen;
 
 public class Main {
 	public static void main(String[] args) {
-
 		Wall wall = new Wall();
 		Snake snake = new Snake();
 		Apple apple = new Apple();

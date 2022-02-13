@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -16,8 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import config.GameConfig;
 import control.IController;
-import defaul.GameConfig;
 import model.IModel;
 
 public class MenuScreen extends JFrame implements IView {
@@ -156,7 +155,13 @@ public class MenuScreen extends JFrame implements IView {
 	@Override
 	public void newGame() {
 		setVisible(false);
-		control.start();
+		control.newGame();
+
+	}
+
+	@Override
+	public void start() {
+		// TODO Auto-generated method stub
 
 	}
 

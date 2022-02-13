@@ -1,10 +1,10 @@
 package control;
 
-import java.awt.Graphics;
-
 import model.IModel;
 
 public interface IController {
+	
+	public void newGame();
 
 	public void start();
 

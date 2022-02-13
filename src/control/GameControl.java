@@ -21,8 +21,14 @@ public class GameControl implements IController {
 	}
 
 	@Override
+	public void newGame() {
+		gameScreen.setVisible(true);
+		model.newGame();
+	}
+
+	@Override
 	public void start() {
-		gameScreen.newGame();
+		model.start();
 	}
 
 	@Override
