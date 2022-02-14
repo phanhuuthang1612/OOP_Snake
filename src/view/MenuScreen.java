@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -13,28 +15,29 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 import config.GameConfig;
+import config.GameEvent;
+import config.GameImage;
 import control.IController;
 import model.IModel;
 
-public class MenuScreen extends JFrame implements IView {
+public class MenuScreen extends JFrame implements IView, Observer {
 	private IController control;
-	private JPanel btnPn;
 	private JButton newGameBtn, resumeBtn, quitBtn;
 	private JLabel highScoreLb;
-	private ImageIcon image;
 	private IModel model;
 
 	public MenuScreen(IController control) {
 		super(GameConfig.name);
 		this.control = control;
 		this.model = control.getModel();
-		image = new ImageIcon("image//background.png");
+		((Observable) model).addObserver(this);
+
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setContentPane(new JLabel(image));
+		setContentPane(new JLabel(new ImageIcon(GameImage.getInstance().background)));
 		setSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
 		init();
 		setLocationRelativeTo(null);
@@ -52,7 +55,7 @@ public class MenuScreen extends JFrame implements IView {
 	private void addLabel() {
 		Font font = new Font("Bushcraft", Font.BOLD, 24);
 		add(Box.createVerticalStrut(200));
-		highScoreLb = new JLabel("HighScore :" + model.getHighScore());
+		highScoreLb = new JLabel("HighScore : " + model.getHighScore());
 		highScoreLb.setFont(font);
 		highScoreLb.setForeground(Color.yellow);
 		add(highScoreLb);
@@ -89,7 +92,7 @@ public class MenuScreen extends JFrame implements IView {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				newGame();
+				showSeleteLevel();
 			}
 		});
 
@@ -115,7 +118,7 @@ public class MenuScreen extends JFrame implements IView {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				control.resume();
 			}
 		});
 
@@ -152,33 +155,50 @@ public class MenuScreen extends JFrame implements IView {
 
 	}
 
+	private void showSeleteLevel() {
+		Object[] possibilities = { "Level 1", "Level 2", "Level 3", "Level 4", "Level 5" };
+		String s = (String) JOptionPane.showInputDialog(this, "Select your level", "Level", JOptionPane.PLAIN_MESSAGE,
+				null, possibilities, "Level 1");
+		if ((s != null) && (s.length() > 0)) {
+			if (s.equals("Level 1"))
+				control.setLevel(1);
+			else if (s.equals("Level 2"))
+				control.setLevel(2);
+			else if (s.equals("Level 3"))
+				control.setLevel(3);
+			else if (s.equals("Level 4"))
+				control.setLevel(4);
+			else if (s.equals("Level 5"))
+				control.setLevel(5);
+			control.newGame();
+			return;
+		}
+	}
+
 	@Override
 	public void newGame() {
 		setVisible(false);
-		control.newGame();
-
-	}
-
-	@Override
-	public void start() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void pause() {
-
 	}
 
 	@Override
 	public void lose() {
-		setVisible(true);
 
 	}
 
 	@Override
 	public void resume() {
 		setVisible(false);
+	}
 
+	@Override
+	public void back() {
+		setVisible(true);
+
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg.equals(GameEvent.UPDATE_HIGHTSCORE))
+			highScoreLb.setText("HighScore : " + model.getHighScore());
 	}
 }

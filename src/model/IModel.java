@@ -24,4 +24,6 @@ public interface IModel {
 	void moveDown();
 
 	int getHighScore();
+
+	int getPoint();
 }

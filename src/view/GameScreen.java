@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -15,9 +17,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import config.GameConfig;
+import config.GameEvent;
+import config.GameImage;
 import control.IController;
 import model.IModel;
 
@@ -27,9 +32,9 @@ public class GameScreen extends JFrame implements IView, Observer {
 	private GamePanel gamePn;
 	private JButton soundBtn;
 	private JButton exitBtn;
-	private JLabel pointLb, highScoreLb;
+	private JLabel pointLb, highScoreLb, levelLb;
 	private IModel model;
-	
+	private boolean isReady;
 
 	public GameScreen(IController controler) {
 		super(GameConfig.name);
@@ -39,6 +44,7 @@ public class GameScreen extends JFrame implements IView, Observer {
 		init();
 		pack();
 		setFocusable(true);
+		requestFocus();
 		addKeyListener(keyListener());
 		setLocationRelativeTo(null);
 		setVisible(false);
@@ -48,7 +54,7 @@ public class GameScreen extends JFrame implements IView, Observer {
 	}
 
 	private void init() {
-		Font font = new Font("Bushcraft", Font.BOLD, 16);
+		Font font = new Font("Bushcraft", Font.BOLD, 20);
 		setLayout(new BorderLayout());
 		optPn = new JPanel();
 		optPn.setBackground(GameConfig.backRoundNorth);
@@ -57,20 +63,27 @@ public class GameScreen extends JFrame implements IView, Observer {
 
 		JPanel pointPn = new JPanel();
 		pointPn.setOpaque(false);
-		pointLb = new JLabel(new ImageIcon("image/apple.png"));
+		pointLb = new JLabel(new ImageIcon(GameImage.getInstance().apple));
 		pointLb.setFont(font);
 		pointLb.setForeground(Color.white);
 		pointLb.setText("0");
 		pointPn.add(pointLb);
 
-		ImageIcon icon = new ImageIcon("image/trophy_00.png");
-		Image imageFit = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-		icon = new ImageIcon(imageFit);
-		highScoreLb = new JLabel(icon);
+		Image cup = GameImage.getInstance().cup;
+		Image imageFit = cup.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+
+		highScoreLb = new JLabel(new ImageIcon(imageFit));
 		highScoreLb.setFont(font);
 		highScoreLb.setForeground(Color.white);
 		highScoreLb.setText("0");
 		pointPn.add(highScoreLb);
+		font = new Font("Bushcraft", Font.BOLD, 24);
+		levelLb = new JLabel();
+		levelLb.setFont(font);
+		levelLb.setForeground(Color.white);
+		levelLb.setText("      Level : " + model.getLevel());
+		pointPn.add(levelLb);
+
 		optPn.add(pointPn, BorderLayout.WEST);
 
 		JPanel btnPn = new JPanel();
@@ -82,6 +95,14 @@ public class GameScreen extends JFrame implements IView, Observer {
 		exitBtn.setBorder(null);
 		exitBtn.setFocusPainted(false);
 		exitBtn.setContentAreaFilled(false);
+		exitBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.back();
+
+			}
+		});
+
 		btnPn.add(exitBtn);
 		optPn.add(btnPn, BorderLayout.EAST);
 
@@ -92,46 +113,81 @@ public class GameScreen extends JFrame implements IView, Observer {
 		add(gamePn, BorderLayout.EAST);
 	}
 
+	private void showGameOverDialog() {
+		Object[] options = { "RETRY", "BACK" };
+		int op = JOptionPane.showOptionDialog(null, "Your score is " + model.getPoint(), "Warning",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.YES_NO_OPTION, null, options, options[0]);
+		if (op == -1 || op == 1) {
+			controller.newGame();
+			controller.back();
+		} else {
+			isReady = false;
+			controller.newGame();
+		}
+	}
+
 	@Override
 	public void newGame() {
-		controller.newGame();
-	}
-
-	@Override
-	public void start() {
-		controller.start();
-
-	}
-
-	@Override
-	public void pause() {
-		controller.pause();
+		levelLb.setText("      Level : " + model.getLevel());
+		isReady = false;
+		setVisible(true);
 	}
 
 	@Override
 	public void lose() {
-		setVisible(false);
-		controller.lose();
+		showGameOverDialog();
 	}
 
 	@Override
 	public void resume() {
-		controller.resume();
+		isReady = false;
 
+		setVisible(true);
+		setFocusable(true);
+		requestFocus();
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
-		gamePn.repaint();
-		System.out.println("repaint");
+	public void back() {
+		setVisible(false);
+	}
 
+	@Override
+	public void update(Observable o, Object event) {
+		if (event.equals(GameEvent.RENDER))
+			gamePn.repaint();
+		else if (event.equals(GameEvent.UPDATE_POINT))
+			pointLb.setText(model.getPoint() + "");
+		else if (event.equals(GameEvent.UPDATE_HIGHTSCORE))
+			highScoreLb.setText(model.getPoint() + "");
+		else if (event.equals(GameEvent.NEW_GAME)) {
+			pointLb.setText(model.getPoint() + "");
+			gamePn.repaint();
+		} else if (event.equals(GameEvent.GAME_OVER)) {
+			gamePn.repaint();
+			controller.lose();
+		}
 	}
 
 	private KeyListener keyListener() {
 		return new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				controller.start();
+				int keyCode = e.getKeyCode();
+				if (!isReady) {
+					controller.start();
+					isReady = true;
+				} else {
+
+					if (keyCode == 37)
+						controller.moveLeft();
+					if (keyCode == 38)
+						controller.moveUp();
+					if (keyCode == 39)
+						controller.moveRight();
+					if (keyCode == 40)
+						controller.moveDown();
+				}
 			}
 		};
 	}

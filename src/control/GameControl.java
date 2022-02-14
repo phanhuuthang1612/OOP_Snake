@@ -22,8 +22,9 @@ public class GameControl implements IController {
 
 	@Override
 	public void newGame() {
-		gameScreen.setVisible(true);
 		model.newGame();
+		gameScreen.newGame();
+		menuScreen.newGame();
 	}
 
 	@Override
@@ -62,24 +63,33 @@ public class GameControl implements IController {
 
 	@Override
 	public void lose() {
-		menuScreen.newGame();
+		model.pause();
+		gameScreen.lose();
+	
 	}
 
 	@Override
 	public void resume() {
 		model.pause();
-		menuScreen.newGame();
+		menuScreen.resume();
+		gameScreen.resume();
 	}
 
 	@Override
 	public void setLevel(int level) {
 		model.setLevel(level);
-
 	}
 
 	@Override
 	public IModel getModel() {
 		return this.model;
+	}
+
+	@Override
+	public void back() {
+		model.pause();
+		gameScreen.back();
+		menuScreen.back();
 	}
 
 }

@@ -15,8 +15,10 @@ public class Snake implements GameObject {
 
 	private Point head;
 	private List<Point> body;
-
+	private int archor;
 	private boolean wasEat;
+
+	private boolean isRender;
 
 	public Snake() {
 		newSnake();
@@ -26,6 +28,7 @@ public class Snake implements GameObject {
 		wasEat = false;
 		head = new Point(GameConfig.col / 3, GameConfig.row / 2);
 		body = new ArrayList<Point>();
+		archor = Snake.RIGHT;
 		body.add(new Point(GameConfig.col / 3 - 3, GameConfig.row / 2));
 		body.add(new Point(GameConfig.col / 3 - 2, GameConfig.row / 2));
 		body.add(new Point(GameConfig.col / 3 - 1, GameConfig.row / 2));
@@ -42,13 +45,13 @@ public class Snake implements GameObject {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(GameConfig.headColor);
-		g.fillRect(head.x * GameConfig.size, head.y * GameConfig.size, GameConfig.size, GameConfig.size);
+		isRender = true;
 		g.setColor(GameConfig.bodyColor);
 		for (Point point : body) {
 			g.fillRect(point.x * GameConfig.size, point.y * GameConfig.size, GameConfig.size, GameConfig.size);
 		}
-
+		g.setColor(GameConfig.headColor);
+		g.fillRect(head.x * GameConfig.size, head.y * GameConfig.size, GameConfig.size, GameConfig.size);
 	}
 
 	public boolean isInSnake(Point p) {
@@ -60,10 +63,18 @@ public class Snake implements GameObject {
 		return false;
 	}
 
-	public void move(int achor) {
+	public boolean isEatSelf() {
+		for (Point point : body)
+			if (point.equals(head))
+				return true;
+
+		return false;
+	}
+
+	public void move() {
 		Point temp = new Point(head);
 		body.add(temp);
-		switch (achor) {
+		switch (archor) {
 		case UP: {
 			head.translate(0, -1);
 			break;
@@ -83,5 +94,29 @@ public class Snake implements GameObject {
 			wasEat = !wasEat;
 		else
 			body.remove(0);
+	}
+
+	public boolean hitWall(Wall wall) {
+		List<Point> wallbody = wall.getBody();
+		for (Point point : wallbody)
+			if (point.equals(head))
+				return true;
+		return false;
+	}
+
+	public void changeArchor(int archor) {
+
+		if (this.archor == UP && archor == DOWN)
+			return;
+		if (this.archor == DOWN && archor == UP)
+			return;
+		if (this.archor == RIGHT && archor == LEFT)
+			return;
+		if (this.archor == LEFT && archor == RIGHT)
+			return;
+		if (isRender) {
+			this.archor = archor;
+			isRender = false;
+		}
 	}
 }

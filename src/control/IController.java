@@ -25,4 +25,6 @@ public interface IController {
 	public void setLevel(int level);
 
 	public IModel getModel();
+
+	public void back();
 }

@@ -17,6 +17,7 @@ import java.util.Random;
 import javax.swing.Timer;
 
 import config.GameConfig;
+import config.GameEvent;
 
 public class Broad extends Observable implements IModel {
 	private Apple apple;
@@ -25,7 +26,6 @@ public class Broad extends Observable implements IModel {
 	private int highScore;
 	private int level;
 	private int point;
-	private int archor;
 	private Timer timer;
 	private int speed;
 	private boolean isReady;
@@ -36,25 +36,34 @@ public class Broad extends Observable implements IModel {
 		this.wall = wall;
 
 		highScore = 0;
-		archor = Snake.RIGHT;
 		speed = 700;
-		newGame();
+
 		timer = new Timer(speed, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Move");
-				snake.move(archor);
+				snake.move();
+				if (snake.hitWall(wall) || snake.isEatSelf()) {
+					setChanged();
+					notifyObservers(GameEvent.GAME_OVER);
+				}
 				if (snake.isEatApple(apple)) {
 					point++;
+					newApple();
 					if (point > highScore) {
 						highScore = point;
+						setChanged();
+						notifyObservers(GameEvent.UPDATE_HIGHTSCORE);
 					}
+					setChanged();
+					notifyObservers(GameEvent.UPDATE_POINT);
 				}
+
 				setChanged();
-				notifyObservers();
+				notifyObservers(GameEvent.RENDER);
 			}
 		});
+		newGame();
 	}
 
 	@Override
@@ -63,19 +72,19 @@ public class Broad extends Observable implements IModel {
 		snake.newSnake();
 		newApple();
 		isReady = false;
+		timer.stop();
 		setChanged();
-		notifyObservers();
+		notifyObservers(GameEvent.NEW_GAME);
 	}
 
 	private void newApple() {
 		Point p;
-		Random rd= new Random();
+		Random rd = new Random();
 		do {
-			int x = rd.nextInt(GameConfig.col-2) + 1;
-			int y = rd.nextInt(GameConfig.col-2) + 1;
+			int x = rd.nextInt(GameConfig.col - 2) + 1;
+			int y = rd.nextInt(GameConfig.col - 2) + 1;
 			p = new Point(x, y);
 		} while (snake.isInSnake(p) || wall.isInWall(p));
-		System.out.println(p);
 		apple.setLocation(p);
 	}
 
@@ -83,14 +92,11 @@ public class Broad extends Observable implements IModel {
 	public void start() {
 		timer.start();
 		isReady = true;
-		setChanged();
-		notifyObservers();
 	}
 
 	@Override
 	public void pause() {
 		timer.stop();
-
 	}
 
 	@Override
@@ -104,10 +110,14 @@ public class Broad extends Observable implements IModel {
 			speed = 400;
 		else if (level == 4)
 			speed = 300;
-		else
+		else if (level == 5)
 			speed = 200;
-
 		timer.setDelay(speed);
+	}
+
+	@Override
+	public int getPoint() {
+		return this.point;
 	}
 
 	@Override
@@ -156,31 +166,27 @@ public class Broad extends Observable implements IModel {
 
 	@Override
 	public void moveLeft() {
-		archor = Snake.LEFT;
+		snake.changeArchor(Snake.LEFT);
 
 	}
 
 	@Override
 	public void moveRight() {
-		archor = Snake.RIGHT;
-
+		snake.changeArchor(Snake.RIGHT);
 	}
 
 	@Override
 	public void moveUp() {
-		archor = Snake.UP;
-
+		snake.changeArchor(Snake.UP);
 	}
 
 	@Override
 	public void moveDown() {
-		archor = Snake.DOWN;
-
+		snake.changeArchor(Snake.DOWN);
 	}
 
 	@Override
 	public int getHighScore() {
-		// TODO Auto-generated method stub
 		return this.highScore;
 	}
 

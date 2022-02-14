@@ -52,4 +52,9 @@ public class Wall implements GameObject {
 				return true;
 		return false;
 	}
+
+	public List<Point> getBody() {
+		
+		return this.wallCube;
+	}
 }
