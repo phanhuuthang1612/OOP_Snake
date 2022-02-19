@@ -48,7 +48,7 @@ public class Broad extends Observable implements IModel {
 					notifyObservers(GameEvent.GAME_OVER);
 				}
 				if (snake.isEatApple(apple)) {
-					point++;
+					point+=level;
 					newApple();
 					if (point > highScore) {
 						highScore = point;
@@ -82,7 +82,7 @@ public class Broad extends Observable implements IModel {
 		Random rd = new Random();
 		do {
 			int x = rd.nextInt(GameConfig.col - 2) + 1;
-			int y = rd.nextInt(GameConfig.col - 2) + 1;
+			int y = rd.nextInt(GameConfig.row - 2) + 1;
 			p = new Point(x, y);
 		} while (snake.isInSnake(p) || wall.isInWall(p));
 		apple.setLocation(p);

@@ -16,7 +16,6 @@ public class Snake implements GameObject {
 	private Point head;
 	private List<Point> body;
 	private int archor;
-	private boolean wasEat;
 
 	private boolean isRender;
 
@@ -25,7 +24,7 @@ public class Snake implements GameObject {
 	}
 
 	public void newSnake() {
-		wasEat = false;
+
 		head = new Point(GameConfig.col / 3, GameConfig.row / 2);
 		body = new ArrayList<Point>();
 		archor = Snake.RIGHT;
@@ -36,7 +35,6 @@ public class Snake implements GameObject {
 
 	public boolean isEatApple(Apple apple) {
 		if (head.equals(apple.getLocation())) {
-			wasEat = true;
 			body.add(new Point(apple.getLocation()));
 			return true;
 		} else
@@ -90,10 +88,7 @@ public class Snake implements GameObject {
 		case DOWN:
 			head.translate(0, 1);
 		}
-		if (wasEat)
-			wasEat = !wasEat;
-		else
-			body.remove(0);
+		body.remove(0);
 	}
 
 	public boolean hitWall(Wall wall) {
