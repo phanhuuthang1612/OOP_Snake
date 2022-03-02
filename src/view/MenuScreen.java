@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 
 import config.GameConfig;
 import config.GameEvent;
-import config.GameImage;
+import config.GameAsset;
 import control.IController;
 import model.IModel;
 
@@ -37,7 +37,7 @@ public class MenuScreen extends JFrame implements IView, Observer {
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setContentPane(new JLabel(new ImageIcon(GameImage.getInstance().background)));
+		setContentPane(new JLabel(new ImageIcon(GameAsset.getInstance().background)));
 		setSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
 		init();
 		setLocationRelativeTo(null);

@@ -18,6 +18,7 @@ import javax.swing.Timer;
 
 import config.GameConfig;
 import config.GameEvent;
+import config.SnakeArchor;
 
 public class Broad extends Observable implements IModel {
 	private Apple apple;
@@ -42,12 +43,12 @@ public class Broad extends Observable implements IModel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				snake.move();
+				boolean isEat=snake.moveAndIsEat(apple);
 				if (snake.hitWall(wall) || snake.isEatSelf()) {
 					setChanged();
 					notifyObservers(GameEvent.GAME_OVER);
 				}
-				if (snake.isEatApple(apple)) {
+				if (isEat) {
 					point+=level;
 					newApple();
 					if (point > highScore) {
@@ -166,23 +167,23 @@ public class Broad extends Observable implements IModel {
 
 	@Override
 	public void moveLeft() {
-		snake.changeArchor(Snake.LEFT);
+		snake.changeArchor(SnakeArchor.LEFT);
 
 	}
 
 	@Override
 	public void moveRight() {
-		snake.changeArchor(Snake.RIGHT);
+		snake.changeArchor(SnakeArchor.RIGHT);
 	}
 
 	@Override
 	public void moveUp() {
-		snake.changeArchor(Snake.UP);
+		snake.changeArchor(SnakeArchor.UP);
 	}
 
 	@Override
 	public void moveDown() {
-		snake.changeArchor(Snake.DOWN);
+		snake.changeArchor(SnakeArchor.DOWN);
 	}
 
 	@Override

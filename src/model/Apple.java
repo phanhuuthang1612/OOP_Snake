@@ -7,7 +7,7 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 import config.GameConfig;
-import config.GameImage;
+import config.GameAsset;
 
 public class Apple implements GameObject {
 	private Point location;
@@ -23,7 +23,7 @@ public class Apple implements GameObject {
 
 	@Override
 	public void draw(Graphics g) {
-		Image appImg = GameImage.getInstance().apple;
+		Image appImg = GameAsset.getInstance().apple;
 		g.drawImage(appImg, location.x * GameConfig.size, location.y * GameConfig.size, GameConfig.size,
 				GameConfig.size, null);
 	}

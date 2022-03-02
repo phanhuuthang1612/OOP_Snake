@@ -35,7 +35,6 @@ public class GameControl implements IController {
 	@Override
 	public void moveUp() {
 		model.moveUp();
-
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 
 import config.GameConfig;
 import config.GameEvent;
-import config.GameImage;
+import config.GameAsset;
 import control.IController;
 import model.IModel;
 
@@ -63,13 +63,13 @@ public class GameScreen extends JFrame implements IView, Observer {
 
 		JPanel pointPn = new JPanel();
 		pointPn.setOpaque(false);
-		pointLb = new JLabel(new ImageIcon(GameImage.getInstance().apple));
+		pointLb = new JLabel(new ImageIcon(GameAsset.getInstance().apple));
 		pointLb.setFont(font);
 		pointLb.setForeground(Color.white);
 		pointLb.setText("0");
 		pointPn.add(pointLb);
 
-		Image cup = GameImage.getInstance().cup;
+		Image cup = GameAsset.getInstance().cup;
 		Image imageFit = cup.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 
 		highScoreLb = new JLabel(new ImageIcon(imageFit));
@@ -131,6 +131,8 @@ public class GameScreen extends JFrame implements IView, Observer {
 		levelLb.setText("      Level : " + model.getLevel());
 		isReady = false;
 		setVisible(true);
+		setFocusable(true);
+		requestFocus();
 	}
 
 	@Override
@@ -175,19 +177,19 @@ public class GameScreen extends JFrame implements IView, Observer {
 			public void keyPressed(KeyEvent e) {
 				int keyCode = e.getKeyCode();
 				if (!isReady) {
-					controller.start();
 					isReady = true;
-				} else {
-
-					if (keyCode == 37)
-						controller.moveLeft();
-					if (keyCode == 38)
-						controller.moveUp();
-					if (keyCode == 39)
-						controller.moveRight();
-					if (keyCode == 40)
-						controller.moveDown();
+					controller.start();					
 				}
+
+				if (keyCode == 37)
+					controller.moveLeft();
+				if (keyCode == 38)
+					controller.moveUp();
+				if (keyCode == 39)
+					controller.moveRight();
+				if (keyCode == 40)
+					controller.moveDown();
+
 			}
 		};
 	}
