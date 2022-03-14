@@ -22,6 +22,7 @@ public class GameAsset {
 	
 	public Image bodyHorizontal = new ImageIcon("image/body_horizontal.png").getImage();
 	public Image bodyVertical = new ImageIcon("image/body_vertical.png").getImage();
+	
 	public Image bodyBottomLeft = new ImageIcon("image/body_bottomleft.png").getImage();
 	public Image bodyBottomRight = new ImageIcon("image/body_bottomright.png").getImage();
 	public Image bodyTopLeft = new ImageIcon("image/body_topleft.png").getImage();

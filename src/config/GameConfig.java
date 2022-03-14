@@ -14,6 +14,5 @@ public class GameConfig {
 	public static Color backroundBroad2 = new Color(142, 204, 57);
 	public static Color headColor = new Color(255, 255, 0);
 	public static Color bodyColor = new Color(80, 118, 249);
-	public static long sleepTime = 500;
 	public static String name = "Game Snake";
 }

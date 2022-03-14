@@ -9,7 +9,7 @@ import config.GameConfig;
 import config.GameAsset;
 import config.SnakeArchor;
 
-public class Snake implements GameObject {
+public class Snake {
 
 	private Point head;
 	private List<Point> body;
@@ -40,7 +40,6 @@ public class Snake implements GameObject {
 		bodyArchor.add(SnakeArchor.RIGHT);
 	}
 
-	@Override
 	public void draw(Graphics g) {
 		g.setColor(GameConfig.bodyColor);
 		for (int i = 1; i < body.size(); i++)

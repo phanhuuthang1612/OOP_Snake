@@ -35,21 +35,21 @@ public class MenuScreen extends JFrame implements IView, Observer {
 		this.model = control.getModel();
 		((Observable) model).addObserver(this);
 
+		init();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setContentPane(new JLabel(new ImageIcon(GameAsset.getInstance().background)));
+		
 		setSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
-		init();
 		setLocationRelativeTo(null);
 		setVisible(true);
 
 	}
 
 	private void init() {
+		setContentPane(new JLabel(new ImageIcon(GameAsset.getInstance().background)));
 		setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		addLabel();
 		addButtons();
-		setPreferredSize(new Dimension(GameConfig.frameWidth, GameConfig.frameHeight));
 	}
 
 	private void addLabel() {

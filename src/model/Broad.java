@@ -59,7 +59,7 @@ public class Broad extends Observable implements IModel {
 					setChanged();
 					notifyObservers(GameEvent.UPDATE_POINT);
 				}
-
+				
 				setChanged();
 				notifyObservers(GameEvent.RENDER);
 			}

@@ -7,9 +7,9 @@ import java.util.List;
 
 import config.GameConfig;
 
-public class Wall implements GameObject {
+public class Wall {
 
-	List<Point> wallCube;
+	private List<Point> wallCube;
 
 	public Wall() {
 		wallCube = new ArrayList<Point>();
@@ -23,7 +23,6 @@ public class Wall implements GameObject {
 		}
 	}
 
-	@Override
 	public void draw(Graphics g) {
 
 		boolean fill = true;
@@ -54,7 +53,7 @@ public class Wall implements GameObject {
 	}
 
 	public List<Point> getBody() {
-		
+
 		return this.wallCube;
 	}
 }

@@ -30,7 +30,6 @@ public class GameScreen extends JFrame implements IView, Observer {
 	private IController controller;
 	private JPanel optPn;
 	private GamePanel gamePn;
-	private JButton soundBtn;
 	private JButton exitBtn;
 	private JLabel pointLb, highScoreLb, levelLb;
 	private IModel model;
@@ -41,10 +40,8 @@ public class GameScreen extends JFrame implements IView, Observer {
 		this.controller = controler;
 		this.model = controler.getModel();
 		((Observable) this.model).addObserver(this);
-		init();
+		createView();
 		pack();
-		setFocusable(true);
-		requestFocus();
 		addKeyListener(keyListener());
 		setLocationRelativeTo(null);
 		setVisible(false);
@@ -53,7 +50,7 @@ public class GameScreen extends JFrame implements IView, Observer {
 
 	}
 
-	private void init() {
+	private void createView() {
 		Font font = new Font("Bushcraft", Font.BOLD, 20);
 		setLayout(new BorderLayout());
 		optPn = new JPanel();
