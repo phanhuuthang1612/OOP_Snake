@@ -1,6 +1,5 @@
 package control;
 
-import model.Broad;
 import model.IModel;
 import view.GameScreen;
 import view.IView;

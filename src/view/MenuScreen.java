@@ -83,13 +83,11 @@ public class MenuScreen extends JFrame implements IView, Observer {
 				// TODO Auto-generated method stub
 				newGameBtn.setForeground(Color.white);
 			}
-
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				newGameBtn.setForeground(Color.yellow);
 
 			}
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				showSeleteLevel();

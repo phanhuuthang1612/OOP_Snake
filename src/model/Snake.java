@@ -14,7 +14,6 @@ public class Snake {
 	private Point head;
 	private List<Point> body;
 	private SnakeArchor archorHead;
-	private List<SnakeArchor> bodyArchor;
 
 	private boolean isRender;
 
@@ -25,106 +24,58 @@ public class Snake {
 	public void newSnake() {
 		isRender = true;
 		head = new Point(GameConfig.col / 3, GameConfig.row / 2);
-
-		body = new ArrayList<Point>();
-		bodyArchor = new ArrayList<SnakeArchor>();
-
 		archorHead = SnakeArchor.RIGHT;
 
+		body = new ArrayList<Point>();
 		body.add(new Point(GameConfig.col / 3 - 3, GameConfig.row / 2));
 		body.add(new Point(GameConfig.col / 3 - 2, GameConfig.row / 2));
 		body.add(new Point(GameConfig.col / 3 - 1, GameConfig.row / 2));
 
-		bodyArchor.add(SnakeArchor.RIGHT);
-		bodyArchor.add(SnakeArchor.RIGHT);
-		bodyArchor.add(SnakeArchor.RIGHT);
 	}
 
-	public void draw(Graphics g) {
-		g.setColor(GameConfig.bodyColor);
-		for (int i = 1; i < body.size(); i++)
-			if (i != body.size() - 1) { // ve khi khac ke dau
-				if (body.get(i + 1).y == body.get(i - 1).y)
-					g.drawImage(GameAsset.getInstance().bodyHorizontal, body.get(i).x * GameConfig.size,
-							body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-				else if (body.get(i + 1).x == body.get(i - 1).x)
-					g.drawImage(GameAsset.getInstance().bodyVertical, body.get(i).x * GameConfig.size,
-							body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-				else { // ve o 90
-					int x = body.get(i + 1).x - body.get(i - 1).x;
-					int y = body.get(i + 1).y - body.get(i - 1).y;
-					if (x == -1 && y == -1) {
-						if (body.get(i).x == body.get(i + 1).x)
-							g.drawImage(GameAsset.getInstance().bodyTopRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyBottomLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					} else if (x == 1 && y == -1) {
-						if (body.get(i).y == body.get(i + 1).y)
-							g.drawImage(GameAsset.getInstance().bodyBottomRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyTopLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					} else if (x == 1 && y == 1) {
-						if (body.get(i).x == body.get(i + 1).x)
-							g.drawImage(GameAsset.getInstance().bodyBottomLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyTopRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					} else if (x == -1 && y == 1) {
-						if (body.get(i).y == body.get(i + 1).y)
-							g.drawImage(GameAsset.getInstance().bodyTopLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyBottomRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					}
-				}
-			} else { // ve ke dau
-				if (head.y == body.get(i - 1).y)
-					g.drawImage(GameAsset.getInstance().bodyHorizontal, body.get(i).x * GameConfig.size,
-							body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-				else if (head.x == body.get(i - 1).x)
-					g.drawImage(GameAsset.getInstance().bodyVertical, body.get(i).x * GameConfig.size,
-							body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-				else {
-					int x = head.x - body.get(i - 1).x;
-					int y = head.y - body.get(i - 1).y;
-					if (x == -1 && y == -1) {
-						if (body.get(i).x == head.x)
-							g.drawImage(GameAsset.getInstance().bodyTopRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyBottomLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					} else if (x == 1 && y == -1) {
-						if (body.get(i).y == head.y)
-							g.drawImage(GameAsset.getInstance().bodyBottomRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyTopLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					} else if (x == 1 && y == 1) {
-						if (body.get(i).x == head.x)
-							g.drawImage(GameAsset.getInstance().bodyBottomLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyTopRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					} else if (x == -1 && y == 1) {
-						if (body.get(i).y == head.y)
-							g.drawImage(GameAsset.getInstance().bodyTopLeft, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-						else
-							g.drawImage(GameAsset.getInstance().bodyBottomRight, body.get(i).x * GameConfig.size,
-									body.get(i).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
-					}
-				}
+	private void drawPartOfBody(Point beforePart, Point currenPart, Point afterPart, Graphics g) {
+		if (beforePart.y == afterPart.y)
+			g.drawImage(GameAsset.getInstance().bodyHorizontal, currenPart.x * GameConfig.size,
+					currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+		else if (beforePart.x == afterPart.x)
+			g.drawImage(GameAsset.getInstance().bodyVertical, currenPart.x * GameConfig.size,
+					currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+		else { // ve o 90
+			int x = beforePart.x - afterPart.x;
+			int y = beforePart.y - afterPart.y;
+			if (x == -1 && y == -1) {
+				if (currenPart.x == beforePart.x)
+					g.drawImage(GameAsset.getInstance().bodyTopRight, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+				else
+					g.drawImage(GameAsset.getInstance().bodyBottomLeft, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+			} else if (x == 1 && y == -1) {
+				if (currenPart.y == beforePart.y)
+					g.drawImage(GameAsset.getInstance().bodyBottomRight, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+				else
+					g.drawImage(GameAsset.getInstance().bodyTopLeft, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+			} else if (x == 1 && y == 1) {
+				if (currenPart.x == beforePart.x)
+					g.drawImage(GameAsset.getInstance().bodyBottomLeft, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+				else
+					g.drawImage(GameAsset.getInstance().bodyTopRight, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+			} else if (x == -1 && y == 1) {
+				if (currenPart.y == beforePart.y)
+					g.drawImage(GameAsset.getInstance().bodyTopLeft, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+				else
+					g.drawImage(GameAsset.getInstance().bodyBottomRight, currenPart.x * GameConfig.size,
+							currenPart.y * GameConfig.size, GameConfig.size, GameConfig.size, null);
 			}
+		}
+	}
 
+	private void drawTail(Graphics g) {
 		int x = body.get(0).x - body.get(1).x;
 		int y = body.get(0).y - body.get(1).y;
 		if (x == -1 && y == 0)
@@ -139,7 +90,9 @@ public class Snake {
 		else if (x == 0 && y == 1)
 			g.drawImage(GameAsset.getInstance().tailDown, body.get(0).x * GameConfig.size,
 					body.get(0).y * GameConfig.size, GameConfig.size, GameConfig.size, null);
+	}
 
+	private void drawHead(Graphics g) {
 		switch (archorHead) {
 		case UP:
 			g.drawImage(GameAsset.getInstance().headUp, head.x * GameConfig.size, head.y * GameConfig.size,
@@ -160,6 +113,18 @@ public class Snake {
 					GameConfig.size, GameConfig.size, null);
 			break;
 		}
+	}
+
+	public void draw(Graphics g) {
+		g.setColor(GameConfig.bodyColor);
+		for (int i = 1; i < body.size(); i++)
+			if (i != body.size() - 1) {
+				drawPartOfBody(body.get(i + 1), body.get(i), body.get(i - 1), g);
+			} else { // ve ke dau
+				drawPartOfBody(head, body.get(i), body.get(i - 1), g);
+			}
+		drawTail(g);
+		drawHead(g);
 		isRender = true;
 	}
 
@@ -183,7 +148,6 @@ public class Snake {
 	public boolean moveAndIsEat(Apple apple) {
 		Point temp = new Point(head);
 		body.add(temp);
-		bodyArchor.add(archorHead);
 		switch (archorHead) {
 		case UP: {
 			head.translate(0, -1);
@@ -203,7 +167,6 @@ public class Snake {
 		boolean ate = head.equals(apple.getLocation());
 		if (!ate) {
 			body.remove(0);
-			bodyArchor.remove(0);
 		}
 		return ate;
 	}
